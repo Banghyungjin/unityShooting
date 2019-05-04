@@ -28,18 +28,20 @@ public class Menu : MonoBehaviour {
 
 		fullscreenToggle.isOn = isFullscreen;
 	}
-
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+    }
 
 	public void Play() {
-		SceneManager.LoadScene ("Game");
+		SceneManager.LoadScene ("Level1");
 	}
 
 	public void Quit() {
 		Application.Quit ();
-	}
-
-	public void WatchSeries() {
-		Application.OpenURL ("https://youtu.be/SviIeTt2_Lc?list=PLFt_AvWsXl0ctd4dgE1F8g3uec4zKNRV0");
 	}
 
 	public void OptionsMenu() {
@@ -52,6 +54,11 @@ public class Menu : MonoBehaviour {
 		optionsMenuHolder.SetActive (false);
 	}
 
+    public void LeaderBoard()
+    {
+        SceneManager.LoadScene("LeaderBoard");
+    }
+   
 	public void SetScreenResolution(int i) {
 		if (resolutionToggles [i].isOn) {
 			activeScreenResIndex = i;

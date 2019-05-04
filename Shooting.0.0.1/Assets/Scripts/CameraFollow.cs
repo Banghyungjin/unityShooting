@@ -12,18 +12,23 @@ public class CameraFollow : MonoBehaviour
 
     void Start()
     {
-        cameraPosition.x = 100f;
+
+        cameraPosition.x = 0f;
         cameraPosition.y = 10f;
         cameraPosition.z = 10f;
     }
 
     void LateUpdate()
     {
-        cameraPosition.x = player.transform.position.x + offsetX;
-        cameraPosition.y = player.transform.position.y + offsetY;
-        cameraPosition.z = player.transform.position.z + offsetZ;
+        if (player.activeSelf == true)
+        {
+            cameraPosition.x = player.transform.position.x + offsetX;
+            cameraPosition.y = player.transform.position.y + offsetY;
+            cameraPosition.z = player.transform.position.z + offsetZ;
 
-        transform.position = cameraPosition;
+            transform.position = cameraPosition;
+        }
+        
 
     }
 }

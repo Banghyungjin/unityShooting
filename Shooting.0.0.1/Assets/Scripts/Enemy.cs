@@ -89,7 +89,7 @@ public class Enemy : LivingEntity {
 		if (hasTarget) {
 			if (Time.time > nextAttackTime) {
 				float sqrDstToTarget = (target.position - transform.position).sqrMagnitude;
-				if (sqrDstToTarget < Mathf.Pow (attackDistanceThreshold + myCollisionRadius + targetCollisionRadius, 2)) {
+				if (sqrDstToTarget < Mathf.Pow (attackDistanceThreshold + myCollisionRadius + targetCollisionRadius, 3)) {
 					nextAttackTime = Time.time + timeBetweenAttacks;
 					AudioManager.instance.PlaySound ("Enemy Attack", transform.position);
 					StartCoroutine (Attack ());
@@ -135,7 +135,7 @@ public class Enemy : LivingEntity {
 	}
 
 	IEnumerator UpdatePath() {
-		float refreshRate = .25f;
+		float refreshRate = .1f;
 
 		while (hasTarget) {
 			if (currentState == State.Chasing) {

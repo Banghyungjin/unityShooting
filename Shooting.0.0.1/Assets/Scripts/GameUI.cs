@@ -52,6 +52,14 @@ public class GameUI : MonoBehaviour {
 	}
 		
 	void OnGameOver() {
+        int nowScore = ScoreKeeper.GetScore();
+        int highScore1 = PlayerPrefs.GetInt("HighScore1");
+        int highScore2 = PlayerPrefs.GetInt("HighScore2");
+        int highScore3 = PlayerPrefs.GetInt("HighScore3");
+        int recentScore1 = PlayerPrefs.GetInt("RecentScore1");
+        int recentScore2 = PlayerPrefs.GetInt("RecentScore2");
+        makeHighScore(nowScore, highScore1, highScore2, highScore3);
+        makeRecentScore(nowScore, recentScore1, recentScore2);
         joyStick.SetActive(false);
         joyStick2.SetActive(false);
         Cursor.visible = true;
@@ -98,11 +106,41 @@ public class GameUI : MonoBehaviour {
 			yield return null;
 		}
 	}
+    void makeHighScore(int nowScore, int highscore1, int highscore2, int highscore3)
+    {
+        if (nowScore >highscore1)
+        {
+            PlayerPrefs.SetInt("HighScore3", highscore2);
+            PlayerPrefs.SetInt("HighScore2", highscore1);
+            PlayerPrefs.SetInt("HighScore1", nowScore);
+        }
+        else if (nowScore > highscore2)
+        {
+            PlayerPrefs.SetInt("HighScore3", highscore2);
+            PlayerPrefs.SetInt("HighScore2", nowScore);
+        }
+        else if (nowScore > highscore3)
+        {
+            PlayerPrefs.SetInt("HighScore3", nowScore);
+        }
+    }
+    void makeRecentScore(int nowScore, int recentscore1, int recentscore2)
+    {
+        PlayerPrefs.SetInt("RecentScore3", recentscore2);
+        PlayerPrefs.SetInt("RecentScore2", recentscore1);
+        PlayerPrefs.SetInt("RecentScore1", nowScore);
+    }
 
 	// UI Input
 	public void StartNewGame() {
+        
 		SceneManager.LoadScene ("Level1");
 	}
+
+    public void LeaderBoard()
+    {
+        SceneManager.LoadScene("LeaderBoard");
+    }
 
 	public void ReturnToMainMenu() {
 		SceneManager.LoadScene ("Menu");
@@ -110,7 +148,7 @@ public class GameUI : MonoBehaviour {
 
     public void Quit()
     {
-        Application.Quit();
+        SceneManager.LoadScene("Menu");
     }
 
 }

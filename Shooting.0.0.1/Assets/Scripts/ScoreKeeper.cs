@@ -9,7 +9,8 @@ public class ScoreKeeper : MonoBehaviour {
 	float streakExpiryTime = 1;
 
 	void Start() {
-		Enemy.OnDeathStatic += OnEnemyKilled;
+        score = 0;
+        Enemy.OnDeathStatic += OnEnemyKilled;
 		FindObjectOfType<Player> ().OnDeath += OnPlayerDeath;
 	}
 
@@ -28,7 +29,11 @@ public class ScoreKeeper : MonoBehaviour {
 	void OnPlayerDeath() {
 
 		Enemy.OnDeathStatic -= OnEnemyKilled;
-
+        
 	}
+    public static int GetScore()
+    {
+        return score;
+    }
 	
 }
