@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -12,7 +13,10 @@ public class Player : LivingEntity {
     public Joystick joystick2;
     private Touch tempTouch;
     private bool touchOn;
-
+    Animator animator;
+    bool IsPause = false;
+    bool chkRun = false;
+    
 
     public Crosshairs crosshairs;
 
@@ -29,6 +33,7 @@ public class Player : LivingEntity {
         gunController = GetComponent<GunController>();
         viewCamera = Camera.main;
         FindObjectOfType<Spawner>().OnNewWave += OnNewWave;
+        animator = GetComponent<Animator>();
     }
 
     void OnNewWave(int waveNumber) {
@@ -45,7 +50,14 @@ public class Player : LivingEntity {
         */
        
         Vector3 moveInput = new Vector3(joystick.Horizontal * 5, GetComponent<Rigidbody>().velocity.y, joystick.Vertical * 5);
-
+        if (joystick.Horizontal != 0||joystick.Vertical != 0)
+        {
+            animator.SetBool("chkRun", true);
+        }
+        else
+        {
+            animator.SetBool("chkRun", false);
+        }
         //Vector3 moveVelocity = moveInput.normalized * moveSpeed;
         controller.Move(moveInput);
         // Vector3 rotation = ((int)joystick2.Horizontal * 5, 0, (int)joystick2.Vertical * 5);
@@ -61,7 +73,7 @@ public class Player : LivingEntity {
         }
         
         Vector3 rot2 = new Vector3(joystick2.Direction.x*100, 0f, joystick2.Direction.y*100);
-        
+
         
 
         // Look input

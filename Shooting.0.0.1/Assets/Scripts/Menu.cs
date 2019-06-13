@@ -7,18 +7,19 @@ public class Menu : MonoBehaviour {
 
 	public GameObject mainMenuHolder;
 	public GameObject optionsMenuHolder;
-
+    public GameObject panelHolder;
 	public Slider[] volumeSliders;
 	public Toggle[] resolutionToggles;
 	public Toggle fullscreenToggle;
 	public int[] screenWidths;
 	int activeScreenResIndex;
+    bool isSelectOn = false;
 
 	void Start() {
 		activeScreenResIndex = PlayerPrefs.GetInt ("screen res index");
 		bool isFullscreen = (PlayerPrefs.GetInt ("fullscreen") == 1)?true:false;
-
-		volumeSliders [0].value = AudioManager.instance.masterVolumePercent;
+        panelHolder.SetActive(false);
+        volumeSliders [0].value = AudioManager.instance.masterVolumePercent;
 		volumeSliders [1].value = AudioManager.instance.musicVolumePercent;
 		volumeSliders [2].value = AudioManager.instance.sfxVolumePercent;
 
@@ -32,17 +33,43 @@ public class Menu : MonoBehaviour {
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Application.Quit();
+            if (isSelectOn)
+            {
+                isSelectOn = false;
+                mainMenuHolder.SetActive(true);
+                panelHolder.SetActive(false);
+            }
+            else
+            {
+                Application.Quit();
+            }
+            
         }
     }
 
 	public void Play() {
-		SceneManager.LoadScene ("Level1");
+        selectMenu();
+		
 	}
+    public void playTemple()
+    {
+        SceneManager.LoadScene("Level1");
+    }
 
-	public void Quit() {
+    public void playCastle()
+    {
+        SceneManager.LoadScene("Level2");
+    }
+
+    public void Quit() {
 		Application.Quit ();
 	}
+    public void selectMenu()
+    {
+        mainMenuHolder.SetActive(false);
+        panelHolder.SetActive(true);
+        isSelectOn = true;
+    }
 
 	public void OptionsMenu() {
 		mainMenuHolder.SetActive (false);

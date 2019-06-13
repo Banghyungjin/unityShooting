@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 [RequireComponent (typeof (UnityEngine.AI.NavMeshAgent))]
 public class Enemy : LivingEntity {
@@ -14,6 +15,7 @@ public class Enemy : LivingEntity {
 	Transform target;
 	LivingEntity targetEntity;
 	Material skinMaterial;
+   // Animator animator;
 
 	Color originalColour;
 
@@ -26,11 +28,13 @@ public class Enemy : LivingEntity {
 	float targetCollisionRadius;
 
 	bool hasTarget;
+    //bool IsAttack = false;
+    //bool IsWalk = false;
 
 	void Awake() {
 		pathfinder = GetComponent<UnityEngine.AI.NavMeshAgent> ();
-		
-		if (GameObject.FindGameObjectWithTag ("Player") != null) {
+       // animator = GetComponent<Animator>();
+        if (GameObject.FindGameObjectWithTag ("Player") != null) {
 			hasTarget = true;
 			
 			target = GameObject.FindGameObjectWithTag ("Player").transform;
@@ -38,6 +42,7 @@ public class Enemy : LivingEntity {
 			
 			myCollisionRadius = GetComponent<CapsuleCollider> ().radius;
 			targetCollisionRadius = target.GetComponent<CapsuleCollider> ().radius;
+          
 		}
 	}
 	
@@ -47,8 +52,7 @@ public class Enemy : LivingEntity {
 		if (hasTarget) {
 			currentState = State.Chasing;
 			targetEntity.OnDeath += OnTargetDeath;
-
-			StartCoroutine (UpdatePath ());
+            StartCoroutine (UpdatePath ());
 		}
 	}
 
@@ -70,7 +74,7 @@ public class Enemy : LivingEntity {
 	{
 		AudioManager.instance.PlaySound ("Impact", transform.position);
 		if (damage >= health && !dead) {
-			if (OnDeathStatic != null) {
+            if (OnDeathStatic != null) {
 				OnDeathStatic ();
 			}
 			AudioManager.instance.PlaySound ("Enemy Death", transform.position);
@@ -92,8 +96,8 @@ public class Enemy : LivingEntity {
 				if (sqrDstToTarget < Mathf.Pow (attackDistanceThreshold + myCollisionRadius + targetCollisionRadius, 3)) {
 					nextAttackTime = Time.time + timeBetweenAttacks;
 					AudioManager.instance.PlaySound ("Enemy Attack", transform.position);
-					StartCoroutine (Attack ());
-				}
+                    StartCoroutine (Attack ());
+                }
 
 			}
 		}
@@ -104,8 +108,8 @@ public class Enemy : LivingEntity {
 
 		currentState = State.Attacking;
 		pathfinder.enabled = false;
-
-		Vector3 originalPosition = transform.position;
+        //animator.SetBool("IsAttack", true);
+        Vector3 originalPosition = transform.position;
 		Vector3 dirToTarget = (target.position - transform.position).normalized;
 		Vector3 attackPosition = target.position - dirToTarget * (myCollisionRadius);
 
@@ -114,8 +118,7 @@ public class Enemy : LivingEntity {
 
 		skinMaterial.color = Color.red;
 		bool hasAppliedDamage = false;
-
-		while (percent <= 1) {
+        while (percent <= 1) {
 
 			if (percent >= .5f && !hasAppliedDamage) {
 				hasAppliedDamage = true;
@@ -130,20 +133,21 @@ public class Enemy : LivingEntity {
 		}
 
 		skinMaterial.color = originalColour;
-		currentState = State.Chasing;
+        //animator.SetBool("IsAttack", false);
+        currentState = State.Chasing;
 		pathfinder.enabled = true;
 	}
 
 	IEnumerator UpdatePath() {
 		float refreshRate = .1f;
-
 		while (hasTarget) {
 			if (currentState == State.Chasing) {
 				Vector3 dirToTarget = (target.position - transform.position).normalized;
 				Vector3 targetPosition = target.position - dirToTarget * (myCollisionRadius + targetCollisionRadius + attackDistanceThreshold/2);
-				if (!dead) {
+                if (!dead) {
 					pathfinder.SetDestination (targetPosition);
-				}
+                   // animator.SetBool("IsWalk", true);
+                }
 			}
 			yield return new WaitForSeconds(refreshRate);
 		}

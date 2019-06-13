@@ -2,29 +2,38 @@
 using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using System;
 
-public class GameUI : MonoBehaviour {
+public class GameUI : MonoBehaviour { //INGAME UI//
 
 	public GameObject allUI;
     public GameObject joyStick;
     public GameObject joyStick2;
     public Image fadePlane;
 	public GameObject gameOverUI;
-
+    public GameObject mapSelect;
 	public RectTransform newWaveBanner;
 	public Text newWaveTitle;
 	public Text newWaveEnemyCount;
 	public Text scoreUI;
 	public Text gameOverScoreUI;
+    //public Text rivalScoreUI; // 겜화면에서 상대방 점수 표시할  text //좌 상단
+    public InputField inputField;
 	public RectTransform healthBar;
+    public int nowScore;
+    public string playerName = "Default Name";
+    public Text inputText;
+    public string nowTime1 = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
+    bool IsPause;
 
-	Spawner spawner;
+    Spawner spawner;
 	Player player;
 
 	void Start () {
 		allUI.SetActive (true);
 		player = FindObjectOfType<Player> ();
 		player.OnDeath += OnGameOver;
+        mapSelect.SetActive(false);
 	}
 
 	void Awake() {
@@ -34,7 +43,20 @@ public class GameUI : MonoBehaviour {
 
 	void Update() {
 		scoreUI.text = ScoreKeeper.score.ToString("D6");
-		float healthPercent = 0;
+        //==
+        //점수 상대에게 전달하는 함수 사용 
+        //Android MainActivity에 변수를 생성 -> 해당 변수에 저장
+        //scoreUI.txt를 전달!
+        //==
+        //점수 상대에게서 받아오는 함수 사용
+        //Android MainActivity에 다른 변수에서 변수 값을 가지고 옴!(기존 값 =0)
+        //int receiveScore = ???; //함수 구현 int ReceiveScore(arguments);//ReceiveScore(가칭) 안에 atoi 사용!
+        //==
+        //멀티플레이 화면 표시 구현
+        //rivalScoreUI.text = ToString(receiveScore); //TEXT.text = string type
+        //
+        //==
+        float healthPercent = 0;
 		if (player != null) {
 			healthPercent = player.health / player.startingHealth;
 		}
@@ -50,25 +72,43 @@ public class GameUI : MonoBehaviour {
 		StopCoroutine ("AnimateNewWaveBanner");
 		StartCoroutine ("AnimateNewWaveBanner");
 	}
+
+
 		
 	void OnGameOver() {
-        int nowScore = ScoreKeeper.GetScore();
-        int highScore1 = PlayerPrefs.GetInt("HighScore1");
-        int highScore2 = PlayerPrefs.GetInt("HighScore2");
-        int highScore3 = PlayerPrefs.GetInt("HighScore3");
-        int recentScore1 = PlayerPrefs.GetInt("RecentScore1");
-        int recentScore2 = PlayerPrefs.GetInt("RecentScore2");
-        makeHighScore(nowScore, highScore1, highScore2, highScore3);
-        makeRecentScore(nowScore, recentScore1, recentScore2);
+        /*
+        nowScore = ScoreKeeper.GetScore();
+        string nowTime = nowTime1;
+        int highScore1 = PlayerPrefs.GetInt("HighScore1");        int highScore2 = PlayerPrefs.GetInt("HighScore2");        int highScore3 = PlayerPrefs.GetInt("HighScore3");        int highScore4 = PlayerPrefs.GetInt("HighScore4");        int highScore5 = PlayerPrefs.GetInt("HighScore5");
+        int recentScore1 = PlayerPrefs.GetInt("RecentScore1");        int recentScore2 = PlayerPrefs.GetInt("RecentScore2");        int recentScore3 = PlayerPrefs.GetInt("RecentScore3");        int recentScore4 = PlayerPrefs.GetInt("RecentScore4");        int recentScore5 = PlayerPrefs.GetInt("RecentScore5");
+        string HTime1 = PlayerPrefs.GetString("HTime1"); string HTime2 = PlayerPrefs.GetString("HTime2"); string HTime3 = PlayerPrefs.GetString("HTime3"); string HTime4 = PlayerPrefs.GetString("HTime4"); string HTime5 = PlayerPrefs.GetString("HTime5");
+        string STime1 = PlayerPrefs.GetString("STime1"); string STime2 = PlayerPrefs.GetString("STime2"); string STime3 = PlayerPrefs.GetString("STime3"); string STime4 = PlayerPrefs.GetString("STime4"); string STime5 = PlayerPrefs.GetString("STime5");
+        makeHighScore(nowScore, highScore1, highScore2, highScore3, highScore4, highScore5,nowTime, HTime1,HTime2,HTime3,HTime4,HTime5);
+        makeRecentScore(nowScore, recentScore1, recentScore2,recentScore4,recentScore5, nowTime,STime1,STime2,STime3,STime4);
+        SetPlayerName();*/
         joyStick.SetActive(false);
         joyStick2.SetActive(false);
+        //inputField.SetActive(true);
         Cursor.visible = true;
 		StartCoroutine(Fade (Color.clear, new Color(0,0,0,.95f),1));
 		gameOverScoreUI.text = scoreUI.text;
-		scoreUI.gameObject.SetActive (false);
+        //==
+        //int receiveScore = ???; //함수 구현 int ReceiveScore(arguments);
+        //==
+        //if(atoi(gameOverScoreUI.text)>receiveScore)
+        //  승리 표시
+        //else
+        //  패배 표시
+        //변수 추출//
+        //점수 상대에게 전달하는 함수 사용
+        //gameOverScoreUI.text를 전달
+        //
+        //==
+        scoreUI.gameObject.SetActive (false);
 		healthBar.transform.parent.gameObject.SetActive (false);
         
 		gameOverUI.SetActive (true);
+        //여기서 변수를 추출해야 한다 by 정희석
 	}
 
 	IEnumerator AnimateNewWaveBanner() {
@@ -106,36 +146,130 @@ public class GameUI : MonoBehaviour {
 			yield return null;
 		}
 	}
-    void makeHighScore(int nowScore, int highscore1, int highscore2, int highscore3)
+    void makeHighScore(int nowScore, int highscore1, int highscore2, int highscore3, int highscore4, int highscore5, string nowtime, string htime1, string htime2, string htime3, string htime4, string htime5, string hname1, string hname2,
+                                           string hname3,string hname4, string playername )
     {
         if (nowScore >highscore1)
         {
+            PlayerPrefs.SetInt("HighScore5", highscore4);
+            PlayerPrefs.SetString("HName5", hname4);
+            PlayerPrefs.SetString("HTime5", htime4);
+            PlayerPrefs.SetInt("HighScore4", highscore3);
+            PlayerPrefs.SetString("HTime4", htime3);
+            PlayerPrefs.SetString("HName4", hname3);
             PlayerPrefs.SetInt("HighScore3", highscore2);
+            PlayerPrefs.SetString("HTime3", htime2);
+            PlayerPrefs.SetString("HName3", hname2);
             PlayerPrefs.SetInt("HighScore2", highscore1);
+            PlayerPrefs.SetString("HTime2", htime1);
+            PlayerPrefs.SetString("HName2", hname1);
             PlayerPrefs.SetInt("HighScore1", nowScore);
+            PlayerPrefs.SetString("HTime1", nowtime);
+            PlayerPrefs.SetString("HName1", playername);
         }
         else if (nowScore > highscore2)
         {
+            PlayerPrefs.SetInt("HighScore5", highscore4);
+            PlayerPrefs.SetString("HName5", hname4);
+            PlayerPrefs.SetString("HTime5", htime4);
+            PlayerPrefs.SetInt("HighScore4", highscore3);
+            PlayerPrefs.SetString("HTime4", htime3);
+            PlayerPrefs.SetString("HName4", hname3);
             PlayerPrefs.SetInt("HighScore3", highscore2);
+            PlayerPrefs.SetString("HTime3", htime2);
+            PlayerPrefs.SetString("HName3", hname2);
             PlayerPrefs.SetInt("HighScore2", nowScore);
+            PlayerPrefs.SetString("HTime2", nowtime);
+            PlayerPrefs.SetString("HName2", playername);
         }
         else if (nowScore > highscore3)
         {
+            PlayerPrefs.SetInt("HighScore5", highscore4);
+            PlayerPrefs.SetString("HName5", hname4);
+            PlayerPrefs.SetString("HTime5", htime4);
+            PlayerPrefs.SetInt("HighScore4", highscore3);
+            PlayerPrefs.SetString("HTime4", htime3);
+            PlayerPrefs.SetString("HName4", hname3);
             PlayerPrefs.SetInt("HighScore3", nowScore);
+            PlayerPrefs.SetString("HTime3", nowtime);
+            PlayerPrefs.SetString("HName3", playername);
+        }
+        else if (nowScore > highscore4)
+        {
+            PlayerPrefs.SetInt("HighScore5", highscore4);
+            PlayerPrefs.SetString("HName5", hname4);
+            PlayerPrefs.SetString("HTime5", htime4);
+            PlayerPrefs.SetInt("HighScore4", nowScore);
+            PlayerPrefs.SetString("HTime4", nowtime);
+            PlayerPrefs.SetString("HName4", playername);
+        }
+        else if (nowScore > highscore5)
+        {
+            PlayerPrefs.SetInt("HighScore5", nowScore);
+            PlayerPrefs.SetString("HTime5", nowtime);
+            PlayerPrefs.SetString("HName5", playername);
         }
     }
-    void makeRecentScore(int nowScore, int recentscore1, int recentscore2)
+    void makeRecentScore(int nowScore, int recentscore1, int recentscore2,int recentscore3,int recentscore4, string nowtime, string rtime1, string rtime2, string rtime3, string rtime4, string rname1, string rname2,
+                                                string rname3, string rname4, string playername)
     {
+        PlayerPrefs.SetInt("RecentScore5", recentscore4);
+        PlayerPrefs.SetString("RTime5", rtime4);
+        PlayerPrefs.SetString("RName5", rname4);
+        PlayerPrefs.SetInt("RecentScore4", recentscore3);
+        PlayerPrefs.SetString("RTime4", rtime3);
+        PlayerPrefs.SetString("RName4", rname3);
         PlayerPrefs.SetInt("RecentScore3", recentscore2);
+        PlayerPrefs.SetString("RTime3", rtime2);
+        PlayerPrefs.SetString("RName3", rname2);
         PlayerPrefs.SetInt("RecentScore2", recentscore1);
+        PlayerPrefs.SetString("RTime2", rtime1);
+        PlayerPrefs.SetString("RName2", rname1);
         PlayerPrefs.SetInt("RecentScore1", nowScore);
+        PlayerPrefs.SetString("RTime1", nowtime);
+        PlayerPrefs.SetString("RName1", playername);
     }
 
-	// UI Input
-	public void StartNewGame() {
-        
-		SceneManager.LoadScene ("Level1");
+    // UI Input
+
+    public void SetPlayerName()
+    {
+        playerName = inputText.text;
+        nowScore = ScoreKeeper.GetScore();
+        string nowTime = nowTime1;
+        int highScore1 = PlayerPrefs.GetInt("HighScore1"); int highScore2 = PlayerPrefs.GetInt("HighScore2"); int highScore3 = PlayerPrefs.GetInt("HighScore3"); int highScore4 = PlayerPrefs.GetInt("HighScore4"); int highScore5 = PlayerPrefs.GetInt("HighScore5");
+        int recentScore1 = PlayerPrefs.GetInt("RecentScore1"); int recentScore2 = PlayerPrefs.GetInt("RecentScore2"); int recentScore3 = PlayerPrefs.GetInt("RecentScore3"); int recentScore4 = PlayerPrefs.GetInt("RecentScore4"); int recentScore5 = PlayerPrefs.GetInt("RecentScore5");
+        string HTime1 = PlayerPrefs.GetString("HTime1"); string HTime2 = PlayerPrefs.GetString("HTime2"); string HTime3 = PlayerPrefs.GetString("HTime3"); string HTime4 = PlayerPrefs.GetString("HTime4"); string HTime5 = PlayerPrefs.GetString("HTime5");
+        string RTime1 = PlayerPrefs.GetString("RTime1"); string RTime2 = PlayerPrefs.GetString("RTime2"); string RTime3 = PlayerPrefs.GetString("RTime3"); string RTime4 = PlayerPrefs.GetString("RTime4"); string RTime5 = PlayerPrefs.GetString("RTime5");
+        string RName1 = PlayerPrefs.GetString("RName1");
+        string RName2 = PlayerPrefs.GetString("RName2");
+        string RName3 = PlayerPrefs.GetString("RName3");
+        string RName4 = PlayerPrefs.GetString("RName4");
+        string HName1 = PlayerPrefs.GetString("HName1");
+        string HName2 = PlayerPrefs.GetString("HName2");
+        string HName3 = PlayerPrefs.GetString("HName3");
+        string HName4 = PlayerPrefs.GetString("HName4");
+
+        makeHighScore(nowScore, highScore1, highScore2, highScore3, highScore4, highScore5, nowTime, HTime1, HTime2, HTime3, HTime4, HTime5,HName1,HName2,HName3,HName4, playerName);
+        makeRecentScore(nowScore, recentScore1, recentScore2, recentScore4, recentScore5, nowTime, RTime1, RTime2, RTime3, RTime4, RName1,RName2,RName3,RName4,playerName);
+        SceneManager.LoadScene("Menu");
+
+    }
+    public void StartNewGame() {
+
+        mapSelect.SetActive(true);
 	}
+
+    public void StartNewTemple()
+    {
+
+        SceneManager.LoadScene("Level1");
+    }
+    public void StartNewCastle()
+    {
+
+        SceneManager.LoadScene("Level2");
+    }
 
     public void LeaderBoard()
     {
@@ -143,11 +277,13 @@ public class GameUI : MonoBehaviour {
     }
 
 	public void ReturnToMainMenu() {
-		SceneManager.LoadScene ("Menu");
+        
+        SceneManager.LoadScene ("Menu");
 	}
 
     public void Quit()
     {
+       
         SceneManager.LoadScene("Menu");
     }
 
