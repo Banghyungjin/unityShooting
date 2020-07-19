@@ -97,6 +97,7 @@ public class Enemy : LivingEntity {
 					nextAttackTime = Time.time + timeBetweenAttacks;
 					AudioManager.instance.PlaySound ("Enemy Attack", transform.position);
                     StartCoroutine (Attack ());
+
                 }
 
 			}
@@ -123,6 +124,8 @@ public class Enemy : LivingEntity {
 			if (percent >= .5f && !hasAppliedDamage) {
 				hasAppliedDamage = true;
 				targetEntity.TakeDamage(damage);
+				this.TakeDamage(damage);
+				OnDeathStatic();
 			}
 
 			percent += Time.deltaTime * attackSpeed;
