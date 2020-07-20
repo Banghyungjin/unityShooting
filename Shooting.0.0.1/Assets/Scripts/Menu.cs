@@ -53,15 +53,20 @@ public class Menu : MonoBehaviour {
 	}
     public void playTemple()
     {
-        SceneManager.LoadScene("Level1");
+        SceneManager.LoadScene("Level3");
     }
 
     public void playCastle()
     {
-        SceneManager.LoadScene("Level2");
+        SceneManager.LoadScene("Level5");
     }
 
-    public void Quit() {
+	public void playCity()
+	{
+		SceneManager.LoadScene("Level4");
+	}
+
+	public void Quit() {
 		Application.Quit ();
 	}
     public void selectMenu()

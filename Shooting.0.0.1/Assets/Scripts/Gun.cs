@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 
 public class Gun : MonoBehaviour {
@@ -14,6 +15,8 @@ public class Gun : MonoBehaviour {
 	public int burstCount;
 	public int projectilesPerMag;
 	public float reloadTime = .3f;
+
+	private Text ammoRemain;
 
 	[Header("Recoil")]
 	public Vector2 kickMinMax = new Vector2(.05f,.2f);
@@ -43,6 +46,7 @@ public class Gun : MonoBehaviour {
 		muzzleflash = GetComponent<MuzzleFlash> ();
 		shotsRemainingInBurst = burstCount;
 		projectilesRemainingInMag = projectilesPerMag;
+		ammoRemain = GameObject.Find("AmmoRemain").GetComponent<Text>();
 	}
 
 	void LateUpdate() {
@@ -54,6 +58,7 @@ public class Gun : MonoBehaviour {
 		if (!isReloading && projectilesRemainingInMag == 0) {
 			Reload();
 		}
+		ammoRemain.text ="Ammo : " +  projectilesRemainingInMag.ToString();
 	}
 
 	void Shoot() {

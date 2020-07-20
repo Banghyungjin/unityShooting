@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
+
 
 public class Spawner : MonoBehaviour {
 
@@ -14,11 +16,16 @@ public class Spawner : MonoBehaviour {
 	public GameObject[] spawnList;
     public GameObject playerSpawnPoint;
     public GameObject nextSpawnPoint;
-    public spArray[] spArrays;
-
+	public GameObject nextLevelUI;
+	public spArray[] spArrays;
+	private Text enemyRemain;
+	public Text gameOverScoreUI;
+	public Text scoreUI;
+	public GameObject joyStick;
+	public GameObject joyStick2;
 
 	Wave currentWave;
-	int currentWaveNumber;
+	int currentWaveNumber = 0;
 	int enemiesRemainingToSpawn;
 	int enemiesRemainingAlive;
 	float nextSpawnTime;
@@ -42,7 +49,7 @@ public class Spawner : MonoBehaviour {
 		nextCampCheckTime = timeBetweenCampingChecks + Time.time;
 		campPositionOld = playerT.position;
 		playerEntity.OnDeath += OnPlayerDeath;
-
+		enemyRemain = GameObject.Find("EnemyRemain").GetComponent<Text>();
 		NextWave ();
 	}
 
@@ -58,7 +65,6 @@ public class Spawner : MonoBehaviour {
 			if ((enemiesRemainingToSpawn > 0 || currentWave.infinite) && Time.time > nextSpawnTime) {
 				enemiesRemainingToSpawn--;
 				nextSpawnTime = Time.time + currentWave.timeBetweenSpawns;
-
 				StartCoroutine ("SpawnEnemy");
 			}
 		}
@@ -72,6 +78,7 @@ public class Spawner : MonoBehaviour {
 				NextWave();
 			}
 		}
+		enemyRemain.text = "Enemy : " + enemiesRemainingAlive;
 	}
 
 	IEnumerator SpawnEnemy() {
@@ -112,7 +119,18 @@ public class Spawner : MonoBehaviour {
 	void OnEnemyDeath() {
 		enemiesRemainingAlive --;
 		if (enemiesRemainingAlive == 0) {
-			NextWave();
+			foreach (Enemy enemy in FindObjectsOfType<Enemy>())
+			{
+				GameObject.Destroy(enemy.gameObject);
+			}
+			joyStick.SetActive(false);
+			joyStick2.SetActive(false);
+			Cursor.visible = true;
+			Time.timeScale = 0;
+			//inputField.SetActive(true);
+			//StartCoroutine(Fade(Color.clear, new Color(0, 0, 0, .95f), 1));
+			nextLevelUI.SetActive(true);
+			NextWave();	
 		}
 	}
 
@@ -120,22 +138,33 @@ public class Spawner : MonoBehaviour {
 		playerT.position = playerSpawnPoint.transform.position;
 	}
 
-	void NextWave() {
-		if (currentWaveNumber > 0) {
-			AudioManager.instance.PlaySound2D ("Level Complete");
+	public void NextWave() {
+		foreach (Enemy enemy in FindObjectsOfType<Enemy>())
+		{
+			GameObject.Destroy(enemy.gameObject);
 		}
-		currentWaveNumber ++;
-
-		if (currentWaveNumber - 1 < waves.Length) {
-			currentWave = waves [currentWaveNumber - 1];
+		if (currentWaveNumber > 0) {
+			AudioManager.instance.PlaySound2D("Level Complete");
+			//ResetPlayerPosition();
+		}
+		currentWaveNumber++;
+		if (currentWaveNumber - 1 < waves.Length)
+		{
+			currentWave = waves[currentWaveNumber - 1];
 
 			enemiesRemainingToSpawn = currentWave.enemyCount;
 			enemiesRemainingAlive = enemiesRemainingToSpawn;
 
-			if (OnNewWave != null) {
+			if (OnNewWave != null)
+			{
+				AudioManager.instance.PlaySound2D("Level Complete");
 				OnNewWave(currentWaveNumber);
+
 			}
-			ResetPlayerPosition();
+			//ResetPlayerPosition();
+		}
+		else { currentWaveNumber = waves.Length;
+			AudioManager.instance.PlaySound2D("Level Complete");
 		}
 	}
 
@@ -159,6 +188,7 @@ public class Spawner : MonoBehaviour {
     {
 		public GameObject SpawnPoint;
 	}
+
 
 
 }

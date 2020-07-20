@@ -6,7 +6,7 @@ public class CameraFollow : MonoBehaviour
 {
     public GameObject player;
     public float offsetX = 0f;
-    public float offsetY = 10f;
+    public float offsetY = 7f;
     public float offsetZ = 0f;
     Vector3 cameraPosition;
 
@@ -14,8 +14,8 @@ public class CameraFollow : MonoBehaviour
     {
 
         cameraPosition.x = 0f;
-        cameraPosition.y = 10f;
-        cameraPosition.z = 10f;
+        cameraPosition.y = 7f;
+        cameraPosition.z = 7f;
     }
 
     void LateUpdate()

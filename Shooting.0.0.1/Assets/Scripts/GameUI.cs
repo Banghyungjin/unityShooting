@@ -11,6 +11,8 @@ public class GameUI : MonoBehaviour { //INGAME UI//
     public GameObject joyStick2;
     public Image fadePlane;
 	public GameObject gameOverUI;
+    public GameObject pauseUI;
+    public GameObject nextLevelUI;
     public GameObject mapSelect;
 	public RectTransform newWaveBanner;
 	public Text newWaveTitle;
@@ -26,49 +28,42 @@ public class GameUI : MonoBehaviour { //INGAME UI//
     public string nowTime1 = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
     bool IsPause;
 
-    Spawner spawner;
-	Player player;
+    public Spawner spawner;
+	public Player player;
 
 	void Start () {
 		allUI.SetActive (true);
-		player = FindObjectOfType<Player> ();
+		//player = FindObjectOfType<Player> ();
 		player.OnDeath += OnGameOver;
-        mapSelect.SetActive(false);
-	}
+        StartCoroutine("AnimateNewWaveBanner");
+    }
 
 	void Awake() {
-		spawner = FindObjectOfType<Spawner> ();
-		spawner.OnNewWave += OnNewWave;
+        //spawner = FindObjectOfType<Spawner> ();
+        StartCoroutine("AnimateNewWaveBanner");
+        spawner.OnNewWave += OnNewWave;
 	}
 
 	void Update() {
 		scoreUI.text = ScoreKeeper.score.ToString("D6");
-        //==
-        //점수 상대에게 전달하는 함수 사용 
-        //Android MainActivity에 변수를 생성 -> 해당 변수에 저장
-        //scoreUI.txt를 전달!
-        //==
-        //점수 상대에게서 받아오는 함수 사용
-        //Android MainActivity에 다른 변수에서 변수 값을 가지고 옴!(기존 값 =0)
-        //int receiveScore = ???; //함수 구현 int ReceiveScore(arguments);//ReceiveScore(가칭) 안에 atoi 사용!
-        //==
-        //멀티플레이 화면 표시 구현
-        //rivalScoreUI.text = ToString(receiveScore); //TEXT.text = string type
-        //
-        //==
         float healthPercent = 0;
 		if (player != null) {
 			healthPercent = player.health / player.startingHealth;
 		}
 		healthBar.localScale = new Vector3 (healthPercent, 1, 1);
 
-	}
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            OnPause();
+        }
+
+    }
 
 	void OnNewWave(int waveNumber) {
 		string[] numbers = { "One", "Two", "Three", "Four", "Five" };
-		newWaveTitle.text = "- Wave " + numbers [waveNumber - 1] + " -";
+		//newWaveTitle.text = "- Wave " + numbers [waveNumber - 1] + " -";
 		string enemyCountString = ((spawner.waves [waveNumber - 1].infinite) ? "Infinite" : spawner.waves [waveNumber - 1].enemyCount + "");
-		newWaveEnemyCount.text = "Enemies: " + enemyCountString;
+		//newWaveEnemyCount.text = "Enemies: " + enemyCountString;
 
 		StopCoroutine ("AnimateNewWaveBanner");
 		StartCoroutine ("AnimateNewWaveBanner");
@@ -112,6 +107,35 @@ public class GameUI : MonoBehaviour { //INGAME UI//
         //여기서 변수를 추출해야 한다 by 정희석
 	}
 
+    void OnPause()
+    {
+        Time.timeScale = 0;
+        joyStick.SetActive(false);
+        joyStick2.SetActive(false);
+        //inputField.SetActive(true);
+        Cursor.visible = true;
+        //StartCoroutine(Fade(Color.clear, new Color(0, 0, 0, .95f), 1));
+        gameOverScoreUI.text = scoreUI.text;
+        scoreUI.gameObject.SetActive(false);
+        healthBar.transform.parent.gameObject.SetActive(false);
+        pauseUI.SetActive(true);
+    }
+
+    public void Resume()
+    {
+        Time.timeScale = 1;
+        joyStick.SetActive(true);
+        joyStick2.SetActive(true);
+        //inputField.SetActive(true);
+        Cursor.visible = true;
+        gameOverScoreUI.text = scoreUI.text;
+        scoreUI.gameObject.SetActive(true);
+        healthBar.transform.parent.gameObject.SetActive(true);
+        pauseUI.SetActive(false);
+        nextLevelUI.SetActive(false);
+    }
+
+    
 	IEnumerator AnimateNewWaveBanner() {
 
 		float delayTime = 1.5f;
@@ -136,7 +160,7 @@ public class GameUI : MonoBehaviour { //INGAME UI//
 		}
 
 	}
-		
+
 	IEnumerator Fade(Color from, Color to, float time) {
 		float speed = 1 / time;
 		float percent = 0;
@@ -264,12 +288,18 @@ public class GameUI : MonoBehaviour { //INGAME UI//
     public void StartNewTemple()
     {
 
-        SceneManager.LoadScene("Level1");
+        SceneManager.LoadScene("Level3");
     }
     public void StartNewCastle()
     {
 
-        SceneManager.LoadScene("Level2");
+        SceneManager.LoadScene("Level5");
+    }
+
+    public void StartNewCity()
+    {
+
+        SceneManager.LoadScene("Level4");
     }
 
     public void LeaderBoard()
