@@ -10,12 +10,16 @@ public class Spawner : MonoBehaviour {
 
 	LivingEntity playerEntity;
 	Transform playerT;
-    public GameObject spawnPoint;
+
+	public GameObject[] spawnList;
+/*
+	public GameObject spawnPoint;
     public GameObject spawnPoint2;
     public GameObject spawnPoint3;
     public GameObject spawnPoint4;
     public GameObject spawnPoint5;
     public GameObject spawnPoint6;
+*/
     public GameObject playerSpawnPoint;
     public GameObject nextSpawnPoint;
     public spArray[] spArrays;
@@ -88,33 +92,10 @@ public class Spawner : MonoBehaviour {
         if (isCamping) {
 			spawnTile = map.GetTileFromPosition(playerT.position);
 		}*/
-        int i = Random.Range(0, 6);
-        if (i == 1)
-        {
-            nextSpawnPoint = spawnPoint;
-        }
-        else if (i ==2)
-        {
-            nextSpawnPoint = spawnPoint2;
-        }
-        else if (i == 3)
-        {
-            nextSpawnPoint = spawnPoint3;
-        }
-        else if (i == 4)
-        {
-            nextSpawnPoint = spawnPoint4;
-        }
-        else if (i == 5)
-        {
-            nextSpawnPoint = spawnPoint5;
-        }
-        else
-        {
-            nextSpawnPoint = spawnPoint6;
-        }
+        int i = Random.Range(0, spawnList.Length);
+		nextSpawnPoint = spawnList[i];
 
-        Material tileMat = nextSpawnPoint.GetComponent<Renderer> ().material;
+		Material tileMat = nextSpawnPoint.GetComponent<Renderer> ().material;
 		Color initialColour = Color.white;
 		Color flashColour = Color.red;
 		float spawnTimer = 0;
@@ -184,5 +165,10 @@ public class Spawner : MonoBehaviour {
     {
         public GameObject nextSpawnPoint;
     }
+
+	public class SpawningPoint
+    {
+		public GameObject SpawnPoint;
+	}
 
 }

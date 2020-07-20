@@ -955,7 +955,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 496541701}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 45, z: 0}
 --- !u!65 &402126984
 BoxCollider:
@@ -1317,10 +1317,10 @@ Transform:
   m_Children:
   - {fileID: 949460805}
   - {fileID: 127344501}
-  - {fileID: 1768051449}
   - {fileID: 1594149655}
   - {fileID: 402126983}
   - {fileID: 1692707336}
+  - {fileID: 1768051449}
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
@@ -1779,12 +1779,13 @@ MonoBehaviour:
     enemyHealth: 1
     skinColour: {r: 0.41960788, g: 0.027450982, b: 0, a: 0}
   enemy: {fileID: 11428566, guid: 888f43376f147a248b658a397cde27de, type: 3}
-  spawnPoint: {fileID: 1768051445}
-  spawnPoint2: {fileID: 949460801}
-  spawnPoint3: {fileID: 127344500}
-  spawnPoint4: {fileID: 1594149654}
-  spawnPoint5: {fileID: 402126982}
-  spawnPoint6: {fileID: 1692707335}
+  spawnList:
+  - {fileID: 949460801}
+  - {fileID: 127344500}
+  - {fileID: 1594149654}
+  - {fileID: 402126982}
+  - {fileID: 1692707335}
+  - {fileID: 1768051445}
   playerSpawnPoint: {fileID: 1589094686}
   nextSpawnPoint: {fileID: 0}
   map: {fileID: 0}
@@ -3105,7 +3106,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 496541701}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 45, z: 0}
 --- !u!65 &1594149656
 BoxCollider:
@@ -3272,7 +3273,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 496541701}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 45, z: 0}
 --- !u!65 &1692707337
 BoxCollider:
@@ -3347,7 +3348,7 @@ GameObject:
   - component: {fileID: 1768051447}
   - component: {fileID: 1768051446}
   m_Layer: 0
-  m_Name: EnemySpawn
+  m_Name: EnemySpawn (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3425,7 +3426,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 496541701}
-  m_RootOrder: 2
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 45, z: 0}
 --- !u!1001 &1772750420
 PrefabInstance:
