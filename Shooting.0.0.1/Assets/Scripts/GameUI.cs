@@ -61,6 +61,7 @@ public class GameUI : MonoBehaviour { //INGAME UI//
 			healthPercent = player.health / player.startingHealth;
 		}
 		healthBar.localScale = new Vector3 (healthPercent, 1, 1);
+
 	}
 
 	void OnNewWave(int waveNumber) {

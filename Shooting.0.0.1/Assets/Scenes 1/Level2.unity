@@ -1778,7 +1778,8 @@ MonoBehaviour:
     hitsToKillPlayer: 2
     enemyHealth: 1
     skinColour: {r: 0.41960788, g: 0.027450982, b: 0, a: 0}
-  enemy: {fileID: 11428566, guid: 888f43376f147a248b658a397cde27de, type: 3}
+  enemyList:
+  - {fileID: 11428566, guid: 888f43376f147a248b658a397cde27de, type: 3}
   spawnList:
   - {fileID: 949460801}
   - {fileID: 127344500}

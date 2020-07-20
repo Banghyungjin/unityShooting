@@ -6,20 +6,12 @@ public class Spawner : MonoBehaviour {
 	public bool devMode;
 
 	public Wave[] waves;
-	public Enemy enemy;
+	public Enemy[] enemyList;
 
 	LivingEntity playerEntity;
 	Transform playerT;
 
 	public GameObject[] spawnList;
-/*
-	public GameObject spawnPoint;
-    public GameObject spawnPoint2;
-    public GameObject spawnPoint3;
-    public GameObject spawnPoint4;
-    public GameObject spawnPoint5;
-    public GameObject spawnPoint6;
-*/
     public GameObject playerSpawnPoint;
     public GameObject nextSpawnPoint;
     public spArray[] spArrays;
@@ -27,7 +19,6 @@ public class Spawner : MonoBehaviour {
 
 	Wave currentWave;
 	int currentWaveNumber;
-
 	int enemiesRemainingToSpawn;
 	int enemiesRemainingAlive;
 	float nextSpawnTime;
@@ -92,8 +83,8 @@ public class Spawner : MonoBehaviour {
         if (isCamping) {
 			spawnTile = map.GetTileFromPosition(playerT.position);
 		}*/
-        int i = Random.Range(0, spawnList.Length);
-		nextSpawnPoint = spawnList[i];
+        int spawnPointNumber = Random.Range(0, spawnList.Length);
+		nextSpawnPoint = spawnList[spawnPointNumber];
 
 		Material tileMat = nextSpawnPoint.GetComponent<Renderer> ().material;
 		Color initialColour = Color.white;
@@ -108,8 +99,8 @@ public class Spawner : MonoBehaviour {
 			yield return null;
 		}
         Vector3 pos = nextSpawnPoint.transform.position;
-
-		Enemy spawnedEnemy = Instantiate(enemy, pos + Vector3.up, Quaternion.identity) as Enemy;
+		int enemyNumber = Random.Range(0, enemyList.Length);
+		Enemy spawnedEnemy = Instantiate(enemyList[enemyNumber], pos + Vector3.up, Quaternion.identity) as Enemy;
 		spawnedEnemy.OnDeath += OnEnemyDeath;
 		spawnedEnemy.SetCharacteristics (currentWave.moveSpeed, currentWave.hitsToKillPlayer, currentWave.enemyHealth, currentWave.skinColour);
 	}
@@ -120,7 +111,6 @@ public class Spawner : MonoBehaviour {
 
 	void OnEnemyDeath() {
 		enemiesRemainingAlive --;
-
 		if (enemiesRemainingAlive == 0) {
 			NextWave();
 		}
@@ -154,7 +144,6 @@ public class Spawner : MonoBehaviour {
 		public bool infinite;
 		public int enemyCount;
 		public float timeBetweenSpawns;
-
 		public float moveSpeed;
 		public int hitsToKillPlayer;
 		public float enemyHealth;
@@ -170,5 +159,6 @@ public class Spawner : MonoBehaviour {
     {
 		public GameObject SpawnPoint;
 	}
+
 
 }
