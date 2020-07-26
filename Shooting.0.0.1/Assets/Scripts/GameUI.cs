@@ -302,6 +302,12 @@ public class GameUI : MonoBehaviour { //INGAME UI//
         SceneManager.LoadScene("Level4");
     }
 
+    public void StartNewLAB()
+    {
+
+        SceneManager.LoadScene("Level6");
+    }
+
     public void LeaderBoard()
     {
         SceneManager.LoadScene("LeaderBoard");

@@ -66,6 +66,11 @@ public class Menu : MonoBehaviour {
 		SceneManager.LoadScene("Level4");
 	}
 
+	public void playLAB()
+	{
+		SceneManager.LoadScene("Level6");
+	}
+
 	public void Quit() {
 		Application.Quit ();
 	}

@@ -1,6 +1,6 @@
-﻿using System.Collections;
+﻿using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 [RequireComponent(typeof(CapsuleCollider))]
 public class PlayerCamera : MonoBehaviour
@@ -8,22 +8,30 @@ public class PlayerCamera : MonoBehaviour
 
     private CapsuleCollider bounder;
     private List<GameObject> listPrevObstacleObject = new List<GameObject>();
+    public GameObject player;
+    public float offsetX = 0f;
+    public float offsetY = 7f;
+    public float offsetZ = 0f;
+    Vector3 cameraPosition;
 
     // Use this for initialization
     void Start()
     {
         bounder = GetComponent<CapsuleCollider>();
+        cameraPosition.x = 0f;
+        cameraPosition.y = 7f;
+        cameraPosition.z = 7f;
     }
     // Update is called once per frame
     void Update()
     {
-        //
+        
         Vector3 pointCenter = transform.TransformPoint(bounder.center);
         Vector3 pointLeft = transform.TransformPoint(bounder.center) - new Vector3(bounder.radius, 0, 0);
         Vector3 pointRight = transform.TransformPoint(bounder.center) + new Vector3(bounder.radius, 0, 0);
         Vector3 pointUp = transform.TransformPoint(bounder.center) + new Vector3(0, bounder.height / 2.0f, 0);
         Vector3 pointDown = transform.TransformPoint(bounder.center) - new Vector3(0, bounder.height / 2.0f, 0);
-
+        
         List<Ray> listRay = new List<Ray>();
         Vector3 targetPosition = Camera.main.transform.position;    // camera world position
 
@@ -104,6 +112,20 @@ public class PlayerCamera : MonoBehaviour
         }
         // swap
         listPrevObstacleObject = listNewObstacleObject;
+    }
+
+    void LateUpdate()
+    {
+        if (player.activeSelf == true)
+        {
+            cameraPosition.x = player.transform.position.x + offsetX;
+            cameraPosition.y = player.transform.position.y + offsetY;
+            cameraPosition.z = player.transform.position.z + offsetZ;
+
+            transform.position = cameraPosition;
+        }
+
+
     }
 
     private bool FindColliderByName(RaycastHit[] inListRayCastInfo, string inName)

@@ -82,8 +82,8 @@ public class Spawner : MonoBehaviour {
 	}
 
 	IEnumerator SpawnEnemy() {
-		float spawnDelay = 1;
-        float tileFlashSpeed = 4;
+		float spawnDelay = 0.1f;
+        float tileFlashSpeed = 4f;
 
         //Transform spawnTile = map.GetRandomOpenTile ();
         /*
